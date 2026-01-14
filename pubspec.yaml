@@ -1,0 +1,54 @@
+name: cloud_toolkit
+description: "SSH deployment tool for uploading and deploying applications to remote servers."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State Management
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
+
+  # Data Models
+  freezed_annotation: ^2.4.1
+  json_annotation: ^4.9.0
+
+  # SSH Client
+  dartssh2: ^2.9.3
+
+  # Local Storage
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+  # Desktop Notifications
+  local_notifier: ^0.1.6
+
+  # File Picker
+  file_picker: ^8.0.0
+
+  # Utilities
+  uuid: ^4.4.0
+  path: ^1.9.0
+  intl: ^0.19.0
+  path_provider: ^2.1.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # Code Generation
+  build_runner: ^2.4.9
+  freezed: ^2.5.2
+  json_serializable: ^6.8.0
+  riverpod_generator: ^2.4.0
+  hive_generator: ^2.0.1
+
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
