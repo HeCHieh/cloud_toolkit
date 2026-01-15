@@ -89,26 +89,14 @@ jobs:
           [ -z "$VERSION" ] && VERSION="1.0.0"
           mkdir -p cloud-toolkit-deb/usr/local/bin cloud-toolkit-deb/usr/share/applications
           cp -r build/linux/x64/release/bundle/* cloud-toolkit-deb/usr/local/bin/
-          cat > cloud-toolkit-deb/usr/share/applications/cloud-toolkit.desktop << 'EOF'
-[Desktop Entry]
-Name=Cloud Toolkit
-Comment=SSH deployment tool
-Exec=cloud_toolkit
-Icon=cloud_toolkit
-Terminal=false
-Type=Application
-Categories=Development;Utility;
-EOF
-          cat > cloud-toolkit-deb/DEBIAN/control << EOF
-Package: cloud-toolkit
-Version: $VERSION
-Section: utils
-Priority: optional
-Architecture: amd64
-Depends: libgtk-3-0, libblkid1, liblzma5
-Maintainer: Cloud Toolkit <support@cloudtoolkit.dev>
-Description: SSH deployment tool
-EOF
+      - name: Create desktop entry file
+        run: |
+          printf '[Desktop Entry]\nName=Cloud Toolkit\nComment=SSH deployment tool\nExec=cloud_toolkit\nIcon=cloud_toolkit\nTerminal=false\nType=Application\nCategories=Development;Utility;\n' > cloud-toolkit-deb/usr/share/applications/cloud-toolkit.desktop
+      - name: Create DEB control file and build
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          [ -z "$VERSION" ] && VERSION="1.0.0"
+          printf 'Package: cloud-toolkit\nVersion: %s\nSection: utils\nPriority: optional\nArchitecture: amd64\nDepends: libgtk-3-0, libblkid1, liblzma5\nMaintainer: Cloud Toolkit <support@cloudtoolkit.dev>\nDescription: SSH deployment tool\n' "$VERSION" > cloud-toolkit-deb/DEBIAN/control
           dpkg-deb --build cloud-toolkit-deb cloud-toolkit-$VERSION-amd64.deb
       - uses: actions/upload-artifact@v4
         with:
