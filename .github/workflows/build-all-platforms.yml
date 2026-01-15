@@ -52,7 +52,10 @@ jobs:
       - name: Install Inno Setup
         run: choco install innosetup -y --no-progress
       - name: Create Windows installer
-        run: iscc "${{ github.workspace }}/.github/workflows/windows-installer.iss"
+        run: |
+          $workspace = "${{ github.workspace }}".Replace('/', '\')
+          (Get-Content .github/workflows/windows-installer.iss).Replace('Source: "build\', "Source: `"$workspace\build\").Replace('OutputDir=output', "OutputDir=$workspace\output") | Set-Content windows-installer-temp.iss
+          iscc windows-installer-temp.iss
       - uses: actions/upload-artifact@v4
         with:
           name: cloud-toolkit-windows-installer
