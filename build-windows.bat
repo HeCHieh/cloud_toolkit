@@ -44,7 +44,7 @@ if not exist "output" mkdir output
 echo.
 echo [5/5] Building installer with Inno Setup...
 choco install innosetup -y 2>nul
-iscc ".github\workflows\installer.iss"
+iscc ".github\workflows\windows-installer.iss"
 if %errorlevel% neq 0 (
     echo [ERROR] Installer creation failed
     exit /b 1

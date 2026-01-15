@@ -87,7 +87,7 @@ jobs:
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
           [ -z "$VERSION" ] && VERSION="1.0.0"
-          mkdir -p cloud-toolkit-deb/usr/local/bin cloud-toolkit-deb/usr/share/applications
+          mkdir -p cloud-toolkit-deb/usr/local/bin cloud-toolkit-deb/usr/share/applications cloud-toolkit-deb/DEBIAN
           cp -r build/linux/x64/release/bundle/* cloud-toolkit-deb/usr/local/bin/
       - name: Create desktop entry file
         run: |
@@ -130,7 +130,7 @@ jobs:
           [ -z "$VERSION" ] && VERSION="1.0.0"
           cp -r build/macos/Build/Products/Release/cloud_toolkit.app CloudToolkit.app
           brew install create-dmg 2>/dev/null || true
-          create-dmg "cloud-toolkit-macos-$VERSION.dmg" CloudToolkit.app/
+          create-dmg "cloud-toolkit-macos-$VERSION.dmg" CloudToolkit.app
       - uses: actions/upload-artifact@v4
         with:
           name: cloud-toolkit-macos-dmg
