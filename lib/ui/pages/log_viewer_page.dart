@@ -106,9 +106,9 @@ class _LogViewerPageState extends ConsumerState<LogViewerPage> {
                                 Theme.of(context).colorScheme.primaryContainer,
                             borderRadius: BorderRadius.circular(4),
                           ),
-                          child: Row(
+                          child: const Row(
                             mainAxisSize: MainAxisSize.min,
-                            children: const [
+                            children: [
                               SizedBox(
                                 width: 8,
                                 height: 8,
