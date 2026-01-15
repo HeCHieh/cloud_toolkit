@@ -59,12 +59,8 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: cloud-toolkit-windows-installer
-          path: Output/*.exe
+          path: output/*.exe
           compression-level: 0
-      - uses: actions/upload-artifact@v4
-        with:
-          name: cloud-toolkit-windows-build
-          path: build/windows/runner/Release/
 
   build-linux:
     needs: analyze-and-test
@@ -105,14 +101,21 @@ jobs:
           fi
           printf 'Package: cloud-toolkit\nVersion: %s\nSection: utils\nPriority: optional\nArchitecture: amd64\nDepends: libgtk-3-0, libblkid1, liblzma5\nMaintainer: Cloud Toolkit <support@cloudtoolkit.dev>\nDescription: SSH deployment tool\n' "$VERSION" > cloud-toolkit-deb/DEBIAN/control
           dpkg-deb --build cloud-toolkit-deb cloud-toolkit-$VERSION-amd64.deb
+      - name: Create tar.gz portable package
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          if ! [[ "$VERSION" =~ ^[0-9] ]]; then
+            VERSION="0.0.0-${GITHUB_RUN_NUMBER}"
+          fi
+          tar -czvf cloud-toolkit-$VERSION-linux-x64.tar.gz -C build/linux/x64/release/bundle .
       - uses: actions/upload-artifact@v4
         with:
           name: cloud-toolkit-linux-deb
           path: cloud-toolkit-*.deb
       - uses: actions/upload-artifact@v4
         with:
-          name: cloud-toolkit-linux-build
-          path: build/linux/x64/release/bundle/
+          name: cloud-toolkit-linux-portable
+          path: cloud-toolkit-*-linux-x64.tar.gz
 
   build-macos:
     needs: analyze-and-test
@@ -142,10 +145,6 @@ jobs:
         with:
           name: cloud-toolkit-macos-dmg
           path: cloud-toolkit-*.dmg
-      - uses: actions/upload-artifact@v4
-        with:
-          name: cloud-toolkit-macos-build
-          path: build/macos/Build/Products/Release/
 
   create-release:
     needs: [build-windows, build-linux, build-macos]
@@ -160,6 +159,7 @@ jobs:
           mkdir -p release-assets
           cp artifacts/cloud-toolkit-windows-installer/*.exe release-assets/ 2>/dev/null || true
           cp artifacts/cloud-toolkit-linux-deb/*.deb release-assets/ 2>/dev/null || true
+          cp artifacts/cloud-toolkit-linux-portable/*.tar.gz release-assets/ 2>/dev/null || true
           cp artifacts/cloud-toolkit-macos-dmg/*.dmg release-assets/ 2>/dev/null || true
       - uses: softprops/action-gh-release@v2
         with:
@@ -173,10 +173,17 @@ jobs:
             ### macOS
             Download `cloud-toolkit-macos-*.dmg` and mount the disk image
 
-            ### Linux
+            ### Linux (Debian/Ubuntu)
             Download `cloud-toolkit-*-amd64.deb` and install:
             ```bash
             sudo apt install ./cloud-toolkit-*.deb
+            ```
+
+            ### Linux (Other distros)
+            Download `cloud-toolkit-*-linux-x64.tar.gz` and extract:
+            ```bash
+            tar -xzvf cloud-toolkit-*-linux-x64.tar.gz -C /opt/cloud-toolkit
+            /opt/cloud-toolkit/cloud_toolkit
             ```
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
