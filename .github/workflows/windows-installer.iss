@@ -13,7 +13,7 @@ ArchitecturesAllowed=x64
 ArchitecturesInstallIn64BitMode=x64
 
 [Files]
-Source="build\windows\runner\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
+Source: "build\windows\runner\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 
 [Icons]
 Name: "{group}\Cloud Toolkit"; Filename: "{app}\cloud_toolkit.exe"
