@@ -52,7 +52,7 @@ jobs:
       - name: Install Inno Setup
         run: choco install innosetup -y --no-progress
       - name: Create Windows installer
-        run: iscc .github/workflows/windows-installer.iss
+        run: iscc "${{ github.workspace }}/.github/workflows/windows-installer.iss"
       - uses: actions/upload-artifact@v4
         with:
           name: cloud-toolkit-windows-installer
